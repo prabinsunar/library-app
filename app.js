@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const express = require('express');
 const app = express();
+require('dotenv').config();
 
 const path = require('path');
 var cookieParser = require('cookie-parser');
@@ -15,9 +16,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 //Database Setup
-const url =
-	'mongodb+srv://prabinsunar:prabinsunar989@cluster0.cmzxi.mongodb.net/local_library?retryWrites=true&w=majority';
-
+const url = process.env.MONGODB_URI;
 //Setting the default connection
 mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true });
 
