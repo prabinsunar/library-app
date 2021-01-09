@@ -1,0 +1,18 @@
+extends layout
+
+block content
+  h1= title
+
+  ul
+    each author in author_list
+      li
+        a(href=author.url) #{author.name}
+        if author.DOB && author.DOD
+            |  (#{author.DOB} - #{author.DOD})
+        else if author.DOD == '' && author.DOB != ''
+            |  (#{author.DOB})
+        else if author.DOB == ''
+            |  
+
+    else
+      li There are no authors.
