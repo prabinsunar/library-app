@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 const express = require('express');
 const app = express();
 require('dotenv').config();
+const compression = require('compression');
+const helmet = require('helmet');
 
 const path = require('path');
 var cookieParser = require('cookie-parser');
@@ -29,7 +31,8 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-
+app.use(compression());
+app.use(helmet());
 //Route Handling
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
