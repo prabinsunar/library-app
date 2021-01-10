@@ -164,10 +164,71 @@ exports.author_delete_post = (req, res, next) => {
 	);
 };
 
-exports.author_update_get = (req, res) => {
-	res.send('Not implemented: Author update GET');
+exports.author_update_get = (req, res, next) => {
+	Author.findById(req.params.id).exec((err, author) => {
+		if (err) {
+			return next(err);
+		}
+
+		res.render('author_form', {
+			title: 'Update Author',
+			author,
+		});
+	});
 };
 
-exports.author_update_post = (req, res) => {
-	res.send('Not implemented: Author update POST');
-};
+exports.author_update_post = [
+	body('first_name', 'First name must not be empty')
+		.trim()
+		.isLength({ min: 1 })
+		.escape()
+		.isAlphanumeric()
+		.withMessage('First has alphanumeric'),
+	body('family_name', 'Last name must not be empty')
+		.trim()
+		.isLength({ min: 1 })
+		.escape()
+		.isAlphanumeric()
+		.withMessage('Lastname is alpahnumeric'),
+	body('date_of_birth', 'Invalid date')
+		.optional({ checkFalsy: true })
+		.isISO8601()
+		.toDate(),
+	body('date_of_death', 'Invalid Date')
+		.optional({ checkFalsy: true })
+		.isISO8601()
+		.toDate(),
+	(req, res, next) => {
+		const errors = validationResult(req);
+
+		let author = new Author({
+			first_name: req.body.first_name,
+			family_name: req.body.family_name,
+			date_of_birth: req.body.date_of_birth,
+			date_of_death: req.body.date_of_death,
+			_id: req.params.id,
+		});
+
+		if (!errors.isEmpty()) {
+			Author.findById(req.params.id).exec((err, author) => {
+				if (err) {
+					return next(err);
+				}
+
+				res.render('author_form', {
+					title: 'Update Author',
+					author,
+					errors: errors.array(),
+				});
+			});
+		} else {
+			Author.findByIdAndUpdate(req.params.id, author, {}, (err, author) => {
+				if (err) {
+					return next(err);
+				}
+
+				res.redirect(author.url);
+			});
+		}
+	},
+];

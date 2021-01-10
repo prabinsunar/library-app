@@ -26,6 +26,14 @@ AuthorSchema.virtual('DOD').get(function () {
 		: '';
 });
 
+AuthorSchema.virtual('dob').get(function () {
+	return DateTime.fromJSDate(this.date_of_birth).toISODate();
+});
+
+AuthorSchema.virtual('dod').get(function () {
+	return DateTime.fromJSDate(this.date_of_death).toISODate();
+});
+
 AuthorSchema.virtual('lifespan').get(function () {
 	if (this.date_of_birth && this.date_of_death) {
 		return (
